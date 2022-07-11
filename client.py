@@ -1,7 +1,9 @@
 import asyncio
 import websockets
 
-async def hello():
+
+async def handler():
+    """Handle user input and server requests/responses"""
     uri = "ws://localhost:8765"
     async with websockets.connect(uri) as websocket:
         print("-" * 25)
@@ -20,4 +22,4 @@ async def hello():
         print("Thank You!")
 
 if __name__ == "__main__":
-    asyncio.run(hello())
+    asyncio.run(handler())

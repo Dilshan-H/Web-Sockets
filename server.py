@@ -3,9 +3,11 @@ import asyncio
 import websockets
 import random
 
-EVENTS =  ["R", "P", "S"]
+EVENTS = ["R", "P", "S"]
+
 
 def get_results(choice, userChoice):
+    """Return the result of the game round based on user choice and computer choice"""
     if userChoice == choice:
         return "DRAW"
     if userChoice == "R":
@@ -26,17 +28,17 @@ def get_results(choice, userChoice):
     else:
         return "Invalid Choice"
 
-async def hello(websocket):
+
+async def handler(websocket):
+    """Handle client requests and send results to the client"""
     while True:
         try:
             response = await websocket.recv()
-            # print(f"<<< {response}")
             choice = random.choice(EVENTS)
             result = get_results(choice, response.upper())
             if result == "Invalid Choice":
                 await websocket.send(result)
             else:
-                # print(result)
                 await websocket.send(f"Computer's choice is: {choice} \n |--> {result}")
         except websockets.ConnectionClosedOK:
             print("Connection terminated by client.")
@@ -45,9 +47,10 @@ async def hello(websocket):
             print("Connection closed.")
             break
 
+
 async def main():
-    async with websockets.serve(hello, "localhost", 8765):
+    async with websockets.serve(handler, "localhost", 8765):
         await asyncio.Future()
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     asyncio.run(main())
